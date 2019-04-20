@@ -1,31 +1,28 @@
 import React, { Component } from "react";
-import "./styles.css";
 import api from "../../services/api";
-export default class Main extends Component {
+import "./styles.css";
+
+export default class Register extends Component {
   state = {
     email: "",
     password: "",
-    errorMessage: ""
+    name: ""
   };
-  componentDidMount() {
-    if (sessionStorage.getItem("token") != undefined)
-      this.props.history.push(`/principal`);
-  }
   handleSubmit = async e => {
     try {
       e.preventDefault();
-      const response = await api.post("/", {
+      const response = await api.post("/register", {
         email: `${this.state.email}`,
-        password: `${this.state.password}`
+        password: `${this.state.password}`,
+        name: `${this.state.name}`
       });
       const { user, token } = response.data;
       sessionStorage.setItem("token", token);
-      this.props.history.push(`/principal`);
+      this.props.history.push(`/`);
     } catch (response) {
       this.setState({ errorMessage: response.data.error });
     }
   };
-
   handleEmailChange = e => {
     this.setState({
       email: e.target.value
@@ -36,25 +33,35 @@ export default class Main extends Component {
       password: e.target.value
     });
   };
+  handleNameChange = e => {
+    this.setState({
+      name: e.target.value
+    });
+  };
+
   render() {
     return (
-      <div id="login-container">
+      <div id="register-container">
         <form onSubmit={this.handleSubmit}>
-          {this.state.errorMessage && <p>{this.state.errorMessage}</p>}
           <input
-            placeholder="e-mail"
+            placeholder="Nome"
+            value={this.state.name}
+            onChange={this.handleNameChange}
+          />
+          <input
             type="email"
+            placeholder="E-mail"
             value={this.state.email}
             onChange={this.handleEmailChange}
           />
           <input
-            placeholder="senha"
             type="password"
+            placeholder="Senha"
             value={this.state.password}
             onChange={this.handlePasswordChange}
           />
-          <button type="submit" title="Login">
-            Login
+          <button type="submit" title="Criar">
+            Criar
           </button>
         </form>
       </div>

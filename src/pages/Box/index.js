@@ -10,10 +10,17 @@ import socket from "socket.io-client";
 
 export default class Box extends Component {
   state = { box: {} };
+
   async componentDidMount() {
     this.subscribeToNewFiles();
+    const token = sessionStorage.getItem("token");
     const box = this.props.match.params.id;
-    const response = await api.get(`boxes/${box}`);
+    const response = await api.get(`boxes/${box}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
 
     this.setState({ box: response.data });
   }
@@ -30,12 +37,18 @@ export default class Box extends Component {
   };
 
   handleUpload = files => {
+    const token = sessionStorage.getItem("token");
     files.forEach(file => {
       const data = new FormData();
       const box = this.props.match.params.id;
       data.append("file", file);
 
-      api.post(`boxes/${box}/files`, data);
+      api.post(`boxes/${box}/files`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
     });
   };
   render() {
@@ -47,7 +60,7 @@ export default class Box extends Component {
         </header>
         <Dropzone onDropAccepted={this.handleUpload}>
           {({ getRootProps, getInputProps }) => (
-            <div class="upload" {...getRootProps()}>
+            <div className="upload" {...getRootProps()}>
               <input {...getInputProps()} />
               <p>Arraste arquivos ou clique aqui</p>
             </div>

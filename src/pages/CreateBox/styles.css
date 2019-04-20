@@ -1,4 +1,4 @@
-#login-container {
+#main-container {
   height: 100%;
 
   display: flex;
@@ -6,22 +6,22 @@
   align-items: center;
 }
 
-#login-container form {
+#main-container form {
   width: 300px;
   display: flex;
   flex-direction: column;
 }
 
-#login-container input {
+#main-container input {
   height: 48px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
   padding: 0 20px;
-  margin-top: 10px;
+  margin-top: 40px;
 }
 
-#login-container button {
+#main-container button {
   height: 48px;
   background: #7159c1;
   color: white;
@@ -35,12 +35,6 @@
   cursor: pointer;
 }
 
-#login-container button:hover {
+#main-container button:hover {
   opacity: 0.8;
-}
-
-#login-container p {
-  font-size: 16px;
-  text-align: center;
-  color: red;
 }

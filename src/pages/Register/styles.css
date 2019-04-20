@@ -1,4 +1,4 @@
-#login-container {
+#register-container {
   height: 100%;
 
   display: flex;
@@ -6,13 +6,13 @@
   align-items: center;
 }
 
-#login-container form {
+#register-container form {
   width: 300px;
   display: flex;
   flex-direction: column;
 }
 
-#login-container input {
+#register-container input {
   height: 48px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -21,7 +21,7 @@
   margin-top: 10px;
 }
 
-#login-container button {
+#register-container button {
   height: 48px;
   background: #7159c1;
   color: white;
@@ -35,11 +35,11 @@
   cursor: pointer;
 }
 
-#login-container button:hover {
+#register-container button:hover {
   opacity: 0.8;
 }
 
-#login-container p {
+#register-container p {
   font-size: 16px;
   text-align: center;
   color: red;
