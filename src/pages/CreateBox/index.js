@@ -10,10 +10,13 @@ export default class CreateBox extends Component {
 
   async componentDidMount() {
     const token = sessionStorage.getItem("token");
-    const response = await api.post("boxes", {
-      title: this.state.newBox
-    });
-    if (response.data.error != undefined) this.props.history.push(`/`);
+    try {
+      const response = await api.post("boxes", {
+        title: this.state.newBox
+      });
+    } catch (e) {
+      this.props.history.push(`/`);
+    }
   }
   handleSubmit = async e => {
     const token = sessionStorage.getItem("token");
