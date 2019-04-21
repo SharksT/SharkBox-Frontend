@@ -35,6 +35,10 @@
   cursor: pointer;
 }
 
+#login-container .register {
+  background: #7cb342;
+}
+
 #login-container button:hover {
   opacity: 0.8;
 }

@@ -15,13 +15,7 @@ export default class Box extends Component {
     this.subscribeToNewFiles();
     const token = sessionStorage.getItem("token");
     const box = this.props.match.params.id;
-    const response = await api.get(`boxes/${box}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
-    });
-
+    const response = await api.get(`/boxes/${box}`);
     this.setState({ box: response.data });
   }
 
@@ -43,19 +37,13 @@ export default class Box extends Component {
       const box = this.props.match.params.id;
       data.append("file", file);
 
-      api.post(`boxes/${box}/files`, data, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        }
-      });
+      api.post(`boxes/${box}/files`, data);
     });
   };
   render() {
     return (
       <div id="box-container">
         <header>
-          <img src={logo} alt="" />
           <h1>{this.state.box.title}</h1>
         </header>
         <Dropzone onDropAccepted={this.handleUpload}>

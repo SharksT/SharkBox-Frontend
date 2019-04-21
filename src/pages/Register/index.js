@@ -43,6 +43,7 @@ export default class Register extends Component {
     return (
       <div id="register-container">
         <form onSubmit={this.handleSubmit}>
+          {this.state.errorMessage && <p>{this.state.errorMessage}</p>}
           <input
             placeholder="Nome"
             value={this.state.name}

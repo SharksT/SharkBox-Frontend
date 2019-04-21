@@ -5,13 +5,11 @@ export default class Main extends Component {
   state = {
     email: "",
     password: "",
-    errorMessage: ""
+    errorMessage: "",
+    register: false
   };
-  componentDidMount() {
-    if (sessionStorage.getItem("token") != undefined)
-      this.props.history.push(`/principal`);
-  }
   handleSubmit = async e => {
+    if (this.state.register) this.props.history.push(`/register`);
     try {
       e.preventDefault();
       const response = await api.post("/", {
@@ -20,6 +18,7 @@ export default class Main extends Component {
       });
       const { user, token } = response.data;
       sessionStorage.setItem("token", token);
+      api.setHeader("Authorization", `Bearer ${token}`);
       this.props.history.push(`/principal`);
     } catch (response) {
       this.setState({ errorMessage: response.data.error });
@@ -34,6 +33,11 @@ export default class Main extends Component {
   handlePasswordChange = e => {
     this.setState({
       password: e.target.value
+    });
+  };
+  handleRegister = () => {
+    this.setState({
+      register: true
     });
   };
   render() {
@@ -55,6 +59,13 @@ export default class Main extends Component {
           />
           <button type="submit" title="Login">
             Login
+          </button>
+          <button
+            title="signUp"
+            className="register"
+            onClick={this.handleRegister}
+          >
+            Register
           </button>
         </form>
       </div>

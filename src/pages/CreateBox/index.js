@@ -7,21 +7,20 @@ export default class CreateBox extends Component {
   state = {
     newBox: ""
   };
+
+  async componentDidMount() {
+    const token = sessionStorage.getItem("token");
+    const response = await api.post("boxes", {
+      title: this.state.newBox
+    });
+    if (response.data.error != undefined) this.props.history.push(`/`);
+  }
   handleSubmit = async e => {
     const token = sessionStorage.getItem("token");
     e.preventDefault();
-    const response = await api.post(
-      "boxes",
-      {
-        title: this.state.newBox
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+    const response = await api.post("/boxes", {
+      title: this.state.newBox
+    });
     this.props.history.push(`/box/${response.data._id}`);
   };
   handleInputChange = e => {
