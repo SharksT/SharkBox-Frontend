@@ -7,11 +7,10 @@ export default class CreateBox extends Component {
   state = {
     newBox: ""
   };
-
   async componentDidMount() {
-    const token = sessionStorage.getItem("token");
+    const user = sessionStorage.getItem("user");
     try {
-      const response = await api.post("boxes", {
+      const response = await api.post(`${user}/boxes`, {
         title: this.state.newBox
       });
     } catch (e) {
@@ -19,12 +18,13 @@ export default class CreateBox extends Component {
     }
   }
   handleSubmit = async e => {
-    const token = sessionStorage.getItem("token");
+    const user = sessionStorage.getItem("user");
     e.preventDefault();
-    const response = await api.post("/boxes", {
+    const response = await api.post(`${user}/boxes`, {
       title: this.state.newBox
     });
-    this.props.history.push(`/box/${response.data._id}`);
+    console.log(response.data.boxes[0]);
+    this.props.history.push(`boxes/${response.data.boxes[0]}`);
   };
   handleInputChange = e => {
     this.setState({

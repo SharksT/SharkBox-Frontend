@@ -18,8 +18,9 @@ export default class Main extends Component {
       });
       const { user, token } = response.data;
       sessionStorage.setItem("token", token);
+      sessionStorage.setItem("user", user._id);
       api.setHeader("Authorization", `Bearer ${token}`);
-      this.props.history.push(`/principal`);
+      this.props.history.push(`/main/${user._id}`);
     } catch (response) {
       this.setState({ errorMessage: response.data.error });
     }

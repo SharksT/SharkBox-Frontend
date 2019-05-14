@@ -2,24 +2,31 @@ import React, { Component } from "react";
 //import logo from "../../assets/logo.svg";
 import api from "../../services/api";
 import "./styles.css";
-import { MdInsertDriveFile } from "react-icons/md";
+import { MdInsertDriveFile, MdFolder } from "react-icons/md";
 import { distanceInWords } from "date-fns";
 import pt from "date-fns/locale/pt";
 import Dropzone from "react-dropzone";
 import socket from "socket.io-client";
 
 export default class Box extends Component {
-  state = { box: {} };
+  state = { box: {}, present: null, old: null };
 
   async componentDidMount() {
     this.subscribeToNewFiles();
-    const user = sessionStorage.getItem("user");
-    console.log("sa");
+    const token = sessionStorage.getItem("token");
+    api.setHeader("Authorization", `Bearer ${token}`);
+    //const user = sessionStorage.getItem("user");
     const box = this.props.match.params.id;
-    console.log(box);
-    const response = await api.get(`${user}/boxes/${box}`);
-    console.log(response.data);
-    this.setState({ box: response.data });
+    //const folder = user || box;
+    const response = await api.get(`${box}/boxes/`);
+    this.setState({
+      box: response.data,
+      present: box,
+      old:
+        box === sessionStorage.getItem("old")
+          ? null
+          : sessionStorage.getItem("old")
+    });
   }
 
   subscribeToNewFiles = () => {
@@ -28,19 +35,20 @@ export default class Box extends Component {
     io.emit("connectRoom", box);
     io.on("file", data => {
       this.setState({
-        box: { ...this.state.box, files: [data, ...this.state.box.files] }
+        box: {
+          ...this.state.box,
+          files: [data, ...this.state.box.files]
+        }
       });
     });
   };
 
   handleUpload = files => {
-    const user = sessionStorage.getItem("user");
     files.forEach(file => {
       const data = new FormData();
       const box = this.props.match.params.id;
       data.append("file", file);
-
-      api.post(`${user}/boxes/${box}/files`, data);
+      api.post(`boxes/${box}/files`, data);
     });
   };
   render() {
@@ -57,14 +65,48 @@ export default class Box extends Component {
             </div>
           )}
         </Dropzone>
-
+        {this.state.old !== null ? (
+          <ul>
+            <li>
+              {" "}
+              <a
+                className="fileInfo"
+                href={`/main/${this.state.old}`}
+                target="_self"
+              >
+                <MdFolder size={24} color="#A5Cfff" />
+                <strong>...</strong>
+              </a>
+            </li>
+          </ul>
+        ) : null}
+        <ul>
+          {this.state.box.boxes &&
+            this.state.box.boxes.map(boxes => (
+              <li key={boxes._id}>
+                <a
+                  className="fileInfo"
+                  href={`/main/${boxes._id}`}
+                  target="_self"
+                  onClick={sessionStorage.setItem("old", this.state.present)}
+                >
+                  <MdFolder size={24} color="#A5Cfff" />
+                  <strong>{boxes.title}</strong>
+                </a>
+                <span>
+                  há{" "}
+                  {distanceInWords(boxes.createdAt, new Date(), { locale: pt })}
+                </span>
+              </li>
+            ))}
+        </ul>
         <ul>
           {this.state.box.files &&
             this.state.box.files.map(file => (
               <li key={file._id}>
                 <a className="fileInfo" href={file.url} target="_blank">
                   <MdInsertDriveFile size={24} color="#A5Cfff" />
-                  <storng>{file.title}</storng>
+                  <strong>{file.title}</strong>
                 </a>
                 <span>
                   há{" "}
