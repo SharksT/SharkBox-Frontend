@@ -1,21 +1,16 @@
 import React, { Component } from "react";
 import api from "../../services/api";
 import "./styles.css";
+import { Form, Input } from "@rocketseat/unform";
 
 export default class Register extends Component {
   state = {
-    email: "",
-    password: "",
-    name: ""
+    errorMessage: ""
   };
-  handleSubmit = async e => {
+  handleSubmit = async data => {
     try {
-      e.preventDefault();
-      const response = await api.post("/register", {
-        email: `${this.state.email}`,
-        password: `${this.state.password}`,
-        name: `${this.state.name}`
-      });
+      const response = await api.post("/register", data);
+      console.log(data);
       const { user, token } = response.data;
       sessionStorage.setItem("token", token);
       this.props.history.push(`/`);
@@ -23,48 +18,19 @@ export default class Register extends Component {
       this.setState({ errorMessage: response.data.error });
     }
   };
-  handleEmailChange = e => {
-    this.setState({
-      email: e.target.value
-    });
-  };
-  handlePasswordChange = e => {
-    this.setState({
-      password: e.target.value
-    });
-  };
-  handleNameChange = e => {
-    this.setState({
-      name: e.target.value
-    });
-  };
 
   render() {
     return (
       <div id="register-container">
-        <form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit}>
           {this.state.errorMessage && <p>{this.state.errorMessage}</p>}
-          <input
-            placeholder="Nome"
-            value={this.state.name}
-            onChange={this.handleNameChange}
-          />
-          <input
-            type="email"
-            placeholder="E-mail"
-            value={this.state.email}
-            onChange={this.handleEmailChange}
-          />
-          <input
-            type="password"
-            placeholder="Senha"
-            value={this.state.password}
-            onChange={this.handlePasswordChange}
-          />
+          <Input placeholder="Nome" name="name" />
+          <Input placeholder="E-mail" name="email" />
+          <Input type="password" placeholder="Senha" name="password" />
           <button type="submit" title="Criar">
             Criar
           </button>
-        </form>
+        </Form>
       </div>
     );
   }

@@ -1,21 +1,17 @@
 import React, { Component } from "react";
 import "./styles.css";
 import api from "../../services/api";
+import { Form, Input } from "@rocketseat/unform";
+
 export default class Main extends Component {
   state = {
-    email: "",
-    password: "",
-    errorMessage: "",
-    register: false
+    register: false,
+    errorMessage: ""
   };
-  handleSubmit = async e => {
+  handleSubmit = async data => {
     if (this.state.register) this.props.history.push(`/register`);
     try {
-      e.preventDefault();
-      const response = await api.post("/", {
-        email: `${this.state.email}`,
-        password: `${this.state.password}`
-      });
+      const response = await api.post("/", data);
       const { user, token } = response.data;
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("user", user._id);
@@ -25,17 +21,6 @@ export default class Main extends Component {
       this.setState({ errorMessage: response.data.error });
     }
   };
-
-  handleEmailChange = e => {
-    this.setState({
-      email: e.target.value
-    });
-  };
-  handlePasswordChange = e => {
-    this.setState({
-      password: e.target.value
-    });
-  };
   handleRegister = () => {
     this.setState({
       register: true
@@ -44,20 +29,10 @@ export default class Main extends Component {
   render() {
     return (
       <div id="login-container">
-        <form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit}>
           {this.state.errorMessage && <p>{this.state.errorMessage}</p>}
-          <input
-            placeholder="e-mail"
-            type="email"
-            value={this.state.email}
-            onChange={this.handleEmailChange}
-          />
-          <input
-            placeholder="senha"
-            type="password"
-            value={this.state.password}
-            onChange={this.handlePasswordChange}
-          />
+          <Input placeholder="e-mail" type="email" name="email" />
+          <Input placeholder="senha" type="password" name="password" />
           <button type="submit" title="Login">
             Login
           </button>
@@ -68,7 +43,7 @@ export default class Main extends Component {
           >
             Register
           </button>
-        </form>
+        </Form>
       </div>
     );
   }
