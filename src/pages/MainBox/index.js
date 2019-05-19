@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 //import logo from "../../assets/logo.svg";
 import api from "../../services/api";
-import 'semantic-ui-css/semantic.min.css'
-import { Button, Popup } from "semantic-ui-react";
+import "semantic-ui-css/semantic.min.css";
+import { Button, Popup, Menu } from "semantic-ui-react";
 import "./styles.css";
 import { MdInsertDriveFile, MdFolder } from "react-icons/md";
 import { distanceInWords } from "date-fns";
@@ -18,6 +18,9 @@ export default class Box extends Component {
   async componentDidMount() {
     this.subscribeToNewFiles();
     const token = sessionStorage.getItem("token");
+    if (token === null) {
+      this.props.history.push(`/`);
+    }
     api.setHeader("Authorization", `Bearer ${token}`);
     //const user = sessionStorage.getItem("user");
     const box = this.props.match.params.id;
@@ -61,35 +64,40 @@ export default class Box extends Component {
       api.post(`boxes/${box}/files`, data);
     });
   };
+  handleLogout = () => {
+    sessionStorage.removeItem("token");
+    api.setHeader("Authorization", `null`);
+    this.props.history.push(`/`);
+  };
   render() {
     return (
       <div id="box-container">
         <header>
           <h1>{this.state.box.title}</h1>
         </header>
-
-        <Popup
-          trigger={<Button content='Criar nova pasta' />}
-          on="click"
-        >
-          <Form onSubmit={this.handleNewBox} >
-            <Input name="title" placeholder="Nome da pasta" />
-            <Button size='tiny' icon='add' ></Button>
-          </Form>
-        </Popup>
-        <Popup
-          trigger={<Button content='Enviar arquivo' />}
-          on='click'
-        >
-          <Dropzone onDropAccepted={this.handleUpload}>
-            {({ getRootProps, getInputProps }) => (
-              <div className="upload" {...getRootProps()}>
-                <input {...getInputProps()} />
-                <p>Arraste arquivos ou clique aqui</p>
-              </div>
-            )}
-          </Dropzone>
-        </Popup>
+        <Menu secondary>
+          <Popup trigger={<Button content="Criar nova pasta" />} on="click">
+            <Form onSubmit={this.handleNewBox}>
+              <Input name="title" placeholder="Nome da pasta" />
+              <Button size="tiny" icon="add" />
+            </Form>
+          </Popup>
+          <Popup trigger={<Button content="Enviar arquivo" />} on="click">
+            <Dropzone onDropAccepted={this.handleUpload}>
+              {({ getRootProps, getInputProps }) => (
+                <div className="upload" {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <p>Arraste arquivos ou clique aqui</p>
+                </div>
+              )}
+            </Dropzone>
+          </Popup>
+          <Menu.Menu position="right">
+            <Button position="right" onClick={this.handleLogout}>
+              Logout
+            </Button>
+          </Menu.Menu>
+        </Menu>
         {this.state.old !== null ? (
           <ul>
             <li>
