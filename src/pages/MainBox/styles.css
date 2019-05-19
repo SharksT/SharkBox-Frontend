@@ -41,14 +41,13 @@
 
 #box-container ul li {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
 #box-container ul li + li {
-  padding-top: 20px;
-  margin-top: 20px;
-  border-top: 1px solid #eee;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
 }
 
 #box-containter ul li .fileInfo {

@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 //import logo from "../../assets/logo.svg";
 import api from "../../services/api";
+import 'semantic-ui-css/semantic.min.css'
+import { Button, Popup } from "semantic-ui-react";
 import "./styles.css";
 import { MdInsertDriveFile, MdFolder } from "react-icons/md";
 import { distanceInWords } from "date-fns";
 import pt from "date-fns/locale/pt";
 import Dropzone from "react-dropzone";
 import socket from "socket.io-client";
-import { Button, Popup } from "semantic-ui-react";
+
 import { Form, Input } from "@rocketseat/unform";
 
 export default class Box extends Component {
@@ -65,23 +67,28 @@ export default class Box extends Component {
         <header>
           <h1>{this.state.box.title}</h1>
         </header>
-        <Dropzone onDropAccepted={this.handleUpload}>
-          {({ getRootProps, getInputProps }) => (
-            <div className="upload" {...getRootProps()}>
-              <input {...getInputProps()} />
-              <p>Arraste arquivos ou clique aqui</p>
-            </div>
-          )}
-        </Dropzone>
+
         <Popup
-          trigger={<MdFolder size={24} color="#A5Cfff" />}
-          content="Create new Folder"
+          trigger={<Button content='Criar nova pasta' />}
           on="click"
         >
-          <Form onSubmit={this.handleNewBox} className="popup">
+          <Form onSubmit={this.handleNewBox} >
             <Input name="title" placeholder="Nome da pasta" />
-            <Button>Criar</Button>
+            <Button size='tiny' icon='add' ></Button>
           </Form>
+        </Popup>
+        <Popup
+          trigger={<Button content='Enviar arquivo' />}
+          on='click'
+        >
+          <Dropzone onDropAccepted={this.handleUpload}>
+            {({ getRootProps, getInputProps }) => (
+              <div className="upload" {...getRootProps()}>
+                <input {...getInputProps()} />
+                <p>Arraste arquivos ou clique aqui</p>
+              </div>
+            )}
+          </Dropzone>
         </Popup>
         {this.state.old !== null ? (
           <ul>
