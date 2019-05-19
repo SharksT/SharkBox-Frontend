@@ -7,6 +7,8 @@ import { distanceInWords } from "date-fns";
 import pt from "date-fns/locale/pt";
 import Dropzone from "react-dropzone";
 import socket from "socket.io-client";
+import { Button, Popup } from "semantic-ui-react";
+import { Form, Input } from "@rocketseat/unform";
 
 export default class Box extends Component {
   state = { box: {}, present: null, old: null };
@@ -42,7 +44,13 @@ export default class Box extends Component {
       });
     });
   };
-
+  handleNewBox = async data => {
+    const user = sessionStorage.getItem("user");
+    const response = await api.post(
+      `${this.props.match.params.id}/boxes/`,
+      data
+    );
+  };
   handleUpload = files => {
     files.forEach(file => {
       const data = new FormData();
@@ -65,6 +73,16 @@ export default class Box extends Component {
             </div>
           )}
         </Dropzone>
+        <Popup
+          trigger={<MdFolder size={24} color="#A5Cfff" />}
+          content="Create new Folder"
+          on="click"
+        >
+          <Form onSubmit={this.handleNewBox} className="popup">
+            <Input name="title" placeholder="Nome da pasta" />
+            <Button>Criar</Button>
+          </Form>
+        </Popup>
         {this.state.old !== null ? (
           <ul>
             <li>

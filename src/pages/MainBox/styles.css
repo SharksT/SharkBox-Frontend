@@ -68,3 +68,9 @@
   color: #999;
   font-size: 13px;
 }
+
+#border-container .popup {
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+}
