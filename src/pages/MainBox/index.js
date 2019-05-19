@@ -22,9 +22,7 @@ export default class Box extends Component {
       this.props.history.push(`/`);
     }
     api.setHeader("Authorization", `Bearer ${token}`);
-    //const user = sessionStorage.getItem("user");
     const box = this.props.match.params.id;
-    //const folder = user || box;
     const response = await api.get(`${box}/boxes/`);
     this.setState({
       box: response.data,
@@ -45,6 +43,14 @@ export default class Box extends Component {
         box: {
           ...this.state.box,
           files: [data, ...this.state.box.files]
+        }
+      });
+    });
+    io.on("box", data => {
+      this.setState({
+        box: {
+          ...this.state.box,
+          boxes: [data, ...this.state.box.boxes]
         }
       });
     });
